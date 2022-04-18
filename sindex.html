@@ -1,0 +1,442 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" type="text/css" media="all" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" type="text/javascript"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+
+
+<link rel="stylesheet" href="{% static 'breadcrumbs/css/style.css' %}" type="text/css">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+<link rel="stylesheet" href="{% static 'dr_dp/custom/main.css' %}">
+
+
+
+<!--<button id='saveButton'>Export my D3 visualization to PNG</button>-->
+<!-- <section id="loading-screen">
+
+        <div id="loader">
+            <p id="placeHolder"></p>
+        </div>
+
+    </section> -->
+<!-- <div id="gloo"></div> -->
+
+<body>
+
+  {% csrf_token %}
+  <div class="row" style="margin-top:01px;margin-right:360px;">
+
+    <ol class="cd-breadcrumb triangle custom-icons" style="max-width:1000px;">
+      <li><a href="/hv/3dview/">3D View </a></li>
+      <li class="current"><a href="#">Main Drawing</a></li>
+      <li><a href="/hv/drawing/">Create Drawing</a></li>
+      <!--      <li><a href="/hv/tfind/">Search Accessories</a></li>-->
+
+      <!--      <li><a href="/hv/bfind/">Selected Accessories</a></li>-->
+    </ol>
+  </div>
+
+
+
+
+
+
+  <style>
+    circle {
+      fill: white;
+      stroke: #fff;
+      stroke-width: 1.5px;
+    }
+
+
+
+    /* Make the download icon big. */
+    .download-button {
+      font-size: 32em;
+      text-align: center;
+    }
+
+    /* Make the download icon look clickable when you hover over it. */
+    .download-button i {
+      cursor: pointer;
+    }
+
+    svg.graphdiagram {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%
+    }
+
+    .tools {
+      float: right;
+      z-index: 100;
+      position: absolute;
+      right: 10px;
+      top: 102px;
+      padding: 02px;
+      margin-right: 10px;
+      background-color: #f7f7f7;
+    }
+
+    .modal.pop-up-editor.node {
+      width: 600px;
+      position: absolute;
+      margin-left: -100px;
+      border: grey solid 1px;
+      height: 500px;
+    }
+
+    .modal.export-markup {
+      position: absolute;
+      width: 800px;
+      margin-left: -400px;
+    }
+
+    .modal.export-markup .modal-body {
+      overflow: hidden;
+      max-height: 70%;
+    }
+
+    p.button-row {
+      text-align: right;
+    }
+
+
+    div.tooltip {
+      position: absolute;
+      text-align: center;
+      width: 100px;
+      height: 100px;
+      padding: 2px;
+      font: 12px sans-serif;
+      background: transparent;
+      border: 0px;
+      border-radius: 8px;
+      pointer-events: none;
+    }
+
+
+    textarea.code {
+      padding: 0;
+      resize: none;
+      width: 760px;
+      border: none;
+      box-shadow: none;
+      font-family: Menlo, monospace;
+      font-size: 10pt;
+    }
+
+    .top-right-btn-bar {
+      padding: 14px 15px 15px;
+      margin-bottom: 0;
+      text-align: right;
+    }
+
+    .top-right-btn-bar .btn+.btn {
+      margin-bottom: 0;
+      margin-left: 5px;
+    }
+
+
+    circle.node.overlay:hover {
+      fill: rgba(150, 150, 255, 0.5);
+    }
+
+    circle.node.ring:hover {
+      stroke: rgba(150, 150, 255, 0.5);
+    }
+
+    path.relationship.overlay {
+
+      stroke-width: 5;
+
+    }
+
+    path.relationship.overlay:hover {
+      fill: rgba(150, 150, 255, 0.5);
+      stroke: rgba(150, 150, 255, 0.5);
+    }
+
+    .type {
+
+      color: "#fff";
+    }
+  </style>
+  <meta charset="utf-8" />
+  <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <!-- <link rel="stylesheet" href="{% static 'arrows/style/graph-editor.css' %}" type="text/css"/>-->
+  <!--<script src="https://unpkg.com/canvg@3.0.1/lib/umd.js"></script>-->
+  <script
+    src="https://cdn.rawgit.com/eligrey/canvas-toBlob.js/f1a01896135ab378aa5c0118eadd81da55e698d8/canvas-toBlob.js"></script>
+  <script
+    src="https://cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js"></script>
+
+  <title>Directed Graph Editor</title>
+  <title>Directed Graph Editor</title>
+  <link rel="stylesheet" href="app.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet" />
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+
+  <script>
+
+
+    $(document).ready(function () {
+      $('#dialog').hide();
+      $('#dialog').click(function () {
+        $('#dialog').show();
+        // <!--  $( this ).css({-->
+        // <!--      "background-color": "yellow",-->
+        // <!--      "font-weight": "bolder",-->
+        // <!--      "margin-left": "100px"-->
+        // <!--    });-->
+        // <!--  $('#dialog').dialog();-->
+        // <!--  $('#dialog').remove();-->
+        $("#dialog").dialog({
+          position: {
+            my: "left top",
+            at: "right bottom"
+          }
+
+        });
+
+      });
+      $('#compbtn').click(function () {
+        $('#dialog').hide();
+        // <!--  $(this).css("margin-left","30px");-->
+        //  console.log($('#compnode').html());
+        // <!-- console.log($( "#myselect" ).val());-->
+
+
+
+      });
+
+    });
+
+
+    function cable() {
+      alert('Please double click inside the circle for selection \n OR \n click around circle for new circle');
+    }
+  </script>
+
+  </head>
+
+
+  <!-- <svg width="100" height="100" xmlns="//www.w3.org/2000/svg"-->
+  <!--    xmlns:xlink="//www.w3.org/1999/xlink">-->
+  <!--     <defs>-->
+  <!--      <style type="text/css">-->
+  <!--        circle { fill: red; }-->
+  <!--      </style>-->
+  <!--    </defs>-->
+  <!--  <circle r="30" cx="50" cy="50"></circle>-->
+  <!--</svg>-->
+
+
+  <div id="dialog" title="Select Component Type">
+    <span id="compnode"></span>
+    <select id="myselect">
+      <!--<option  value="null">null</option>-->
+      <option value="over">Overhead</option>
+      <option value="trans">Transformer</option>
+
+    </select>
+    <a id="compbtn" class="save btn btn-success">submit</a>
+  </div>
+
+  <div id="canvas"></div>
+  <!--<svg id="cablecross"  width="300" height="300" viewBox="0 0 100 100" xmlns="//www.w3.org/2000/svg"/>-->
+
+
+  <div id="dataviz_builtWithD3"></div>
+  <div class="tools form-inline well" style="padding:06px;">
+    <button class="btn" onclick="cable()">Add Component</button>
+    <!--     <button class="btn" id="exportMarkupButton">Export Markup</button>-->
+    <!--      <a  class="btn" id="downloadSvgButton"   download="arrows.svg">Download SVG</a>-->
+
+
+
+
+
+    <!--    <button onclick="download_csv()">Download CSV</button>-->
+    <!--    <a class="btn" id="downloadSvgButton" download="arrows.svg">Download SVG</a>-->
+    <!--    <button-->
+    <!--    class="btn" id="chooseStyleButton">Choose Style</button>-->
+
+    <p class="btn">
+      <label for="internalScale" style="display: inline-block; width: 240px; text-align: right">
+        Inertial Scale = <span id="nRadius-values">…</span>
+      </label>
+
+      <!--        <label for="internalScale">Internal Scale</label>-->
+      <input id="internalScale" type="range" min="1" max="150" />
+    </p>
+    <!--    <a href="'+rawSvg+'" id="downloadSvgButton" download="arrows.svg">Download SVG</a>-->
+
+    <a name="blur_button" id=save value=nodes class="btn btn-success">Save</a>
+
+
+
+    <!-- <a href="'+imgData+'" download="download">Download</a>-->
+
+    <!--<a href="'svgBlob'" id="downloadSvg"download="download">Download svg</a>-->
+
+    <!-- <li class="btn" onclick="download()" title="Download as SVG file.">-->
+    <!--      <i class="btn">download svg</i>-->
+    <!-- </li>-->
+  </div>
+  <div class="modal hide export-markup">
+    <div class="modal-header">
+      <h3>Edit/Export markup</h3>
+    </div>
+    <div class="modal-body">
+      <textarea class="code" rows="8">Some text</textarea>
+    </div>
+    <div class="modal-footer"> <a href="#" class="btn cancel">Cancel</a>
+      <a href="#" class="btn btn-primary" id="save_markup">Save</a>
+    </div>
+  </div>
+  <div class="modal hide choose-style">
+    <div class="modal-header">
+      <h3>Choose Style</h3>
+    </div>
+    <div class="modal-body">
+      <label class="form-check">
+        <input type="radio" name="styleChoice" value="graph-style-chunky.css" checked>With Image</label>
+      <label class="form-check">
+        <input type="radio" name="styleChoice" value="graph-style-bootstrap.css">Without Image</label>
+    </div>
+    <div class="modal-footer"> <a href="#" class="btn cancel">Cancel</a>
+      <a href="#" class="btn btn-primary" id="saveStyle">Save</a>
+    </div>
+  </div>
+  <div class="modal hide pop-up-editor node" tabindex="-1">
+    <div class="modal-header">
+      <h3>Edit Components</h3>
+    </div>
+
+    <div class="top-right-btn-bar">
+      <button class="btn btn-danger" id="edit_node_delete">Delete</button>
+    </div>
+
+    <script>
+
+      // <!--function updateSvgDownloadLink() {-->
+      // <!--      var rawSvg = new XMLSerializer().serializeToString(d3.select("#canvas svg" ).node());-->
+      // <!--     var dataURL= `data:image/svg+xml,${encodeURIComponent(rawSvg)}`-->
+
+      // <!--    }-->
+      // This SVG data is copied from
+      // //stackoverflow.com/questions/5433806/convert-embedded-svg-to-png-in-place
+      var dataURL = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%22-350%20-250%20700%20500%22%3E%0A%20%20%20%20%20%20%3Cstyle%20type%3D%22text%2Fcss%22%20media%3D%22screen%22%3E%0A%20%20%20%20%20%20%20%20svg%20%7B%20background%3A%23fff%3B%20%7D%0A%20%20%20%20%20%20%20%20.face%20%7B%20stroke%3A%23000%3B%20stroke-width%3A20px%3B%20stroke-linecap%3Around%20%7D%0A%20%20%20%20%20%20%3C%2Fstyle%3E%0A%20%20%20%20%20%20%3Ccircle%20r%3D%22200%22%20class%3D%22face%22%20fill%3D%22red%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20fill%3D%22none%22%20class%3D%22face%22%20transform%3D%22translate(-396%2C-230)%22%20d%3D%22M487%2C282c-15%2C36-51%2C62-92%2C62%20c-41%2C0-77-25-92-61%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22-60%22%20cy%3D%22-50%22%20r%3D%2220%22%20fill%3D%22%23000%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2260%22%20cy%3D%22-50%22%20r%3D%2220%22%20fill%3D%22%23000%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E";
+
+      // A data URL can also be generated from an existing SVG element.
+      // function svgDataURL(svg) {
+      //   var svgAsXML = (new XMLSerializer).serializeToString(svg);
+      //   return "data:image/svg+xml," + encodeURIComponent(svgAsXML);
+      // }
+
+      function download() {
+        var dl = document.createElement("a");
+        document.body.appendChild(dl); // This line makes it work in Firefox.
+        dl.setAttribute("href", dataURL);
+        dl.setAttribute("download", "test.svg");
+        dl.click();
+      }
+
+    </script>
+
+
+    <!--  <button id="save" class="btn btn-primary "-->
+    <!--    style="margin-left: 5%;width: 10%;height: 70%;margin-top: 0%;"  ng-click="">-->
+    <!--            Save as Image-->
+    <!-- </button>-->
+
+    <!--<div style="text-align:center;">-->
+    <!--    <org-chart dataobj="vm.company" ng-if="vm.company"></org-chart>-->
+    <!--    <canvas width="1000" height="800" style="display: none;"></canvas>-->
+    <!--    &lt;!&ndash; <div id="svgdataurl" style="display: none;"></div> &ndash;&gt;-->
+    <!--</div>-->
+    <svg id="cablecross" width="300" height="300" viewBox="0 0 100 100" xmlns="//www.w3.org/2000/svg">
+    </svg>
+
+    <!--<div id="d3image"></div>-->
+
+    <script src="https://blueimp.github.io/JavaScript-Canvas-to-Blob/js/canvas-to-blob.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/canvg/1.4/rgbcolor.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stackblur-canvas/1.4.1/stackblur.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvg/dist/browser/canvg.min.js"></script>
+
+
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <!--  <script src="{% static 'arrows/lib/app.js' %}"></script>-->
+    <script src="app.js"></script>
+    <!--  <script src="{% static 'arrows/graph-diagram.js' %}"></script>-->
+    <!--  <script src="{% static 'arrows/graph-editor.js' %}"></script>-->
+    <!-- <script src="{% static 'arrows/lib/d3.v5.min.js' %}"></script>-->
+
+
+    <svg width="700" height="660">
+      <filter id="image" x="0%" y="0%" width="100%" height="100%">
+        <!--    <feImage xlink:href="//127.0.0.1:8000/static/arrows/img/overhead.png" />-->
+        <!--    <feImage xlink:href="//127.0.0.1:8000/static/arrows/img/transformer.png" />-->
+      </filter>
+
+
+    </svg>
+    <svg width="700" height="660">
+
+      <filter id="image1" x="0%" y="0%" width="100%" height="100%">
+        <!--    <feImage xlink:href="//127.0.0.1:8000/static/arrows/img/overhead.png" />-->
+        <!--    <feImage xlink:href="//127.0.0.1:8000/static/arrows/img/transformer.png" />-->
+      </filter>
+
+
+    </svg>
+
+
+
+
+
+    <script>
+
+      d3.select("#internalScale").on("input", function () {
+        update(+this.value);
+      });
+
+      // Initial starting radius of the circle
+      update(42);
+
+      // update the elements
+      function update(internalScale) {
+
+        // adjust the text on the range slider
+        d3.select("#nRadius-values").text(internalScale);
+        d3.select("#internalScale").property("value", internalScale);
+
+        // update the circle radius
+
+
+        circle.selectAll("circle")
+          .attr("r", internalScale);
+      }</script>
+
+  </div>
+  {% endblock %}
+</body>
