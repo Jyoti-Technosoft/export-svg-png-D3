@@ -89,8 +89,8 @@ var defs = svg.append('svg:defs');
 
 var nodes = [
     {id: 0, "name": "over","image": "url(#overhead_image)", reflexive: false},
-    {id: 1,  "name": "tran", "image": "url(#transformer_image)","isVisible": false,reflexive: true },
-    {id: 2,  "name": "trans", "image": "url(#transformer1_image)", "isVisible": false,reflexive: false}
+    {id: 1, "name": "trans", "image": "url(#transformer_image)","isVisible": false,reflexive: true },
+    {id: 2, "name": "tran", "image": "url(#transformer1_image)", "isVisible": false,reflexive: false}
   ];
 
   lastNodeId = 2,
@@ -292,8 +292,7 @@ path.on("click", function(d) {
     .attr('class', 'node')
     .attr('r', 42)
     .attr('id', function(d){return d.id})
-    .style("fill", function(d) { return d.image;})
-    //.style('fill', function(d) { return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id); })
+    .style("fill", function(d) { return d.image ? d.image : "#fff";})
     .style('stroke', function(d) { return d3.rgb(colors(d.id)).darker().toString(); })
     .classed('reflexive', function(d) { return d.reflexive; })
     .on('mouseover', function(d) {
