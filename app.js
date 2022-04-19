@@ -669,9 +669,9 @@ var firstChild = firstG.childNodes[0];
     image.src = imgsrc;
  }
 
-  d3.select("#save").on("click", exportSvg);
+  d3.select("#save").on("click", exportImage);
 
-  function exportSvg() {
+  function exportImage() {
     // var canvas = d3.select(".don");
     // var img = new Image(),
     //   serializer = new XMLSerializer(),
