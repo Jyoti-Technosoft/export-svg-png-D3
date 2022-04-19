@@ -30,14 +30,14 @@ const getBase64FromUrl = async(url) => {
 
 var defs = svg.append('svg:defs');
 
-  // image1
+  // overhead
   var pattern1 = defs.append("svg:pattern")
     .attr("id", "overhead_image")
     .attr("width", 16)
     .attr("height", 16);
   var imgEle1 = pattern1.append("svg:image")
     .attr("xlink:href", () => {
-      return getBase64FromUrl('/assets/image1.jpg').then((value) => {
+      return getBase64FromUrl('/assets/overhead.png').then((value) => {
         console.log("value", imgEle1);
         imgEle1.attr("xlink:href", value)
       });
@@ -47,14 +47,14 @@ var defs = svg.append('svg:defs');
     .attr("x", 8)
     .attr("y", 14);
 
-  // image2
+  // tansformer
   var pattern2 = defs.append("svg:pattern")
     .attr("id", "transformer_image")
     .attr("width", 16)
     .attr("height", 16);
     var imgEle2 = pattern2.append("svg:image")
     .attr("xlink:href", () => {
-      return getBase64FromUrl('/assets/image2.jpg').then((value) => {
+      return getBase64FromUrl('/assets/transformer.png').then((value) => {
         console.log("value", imgEle2);
         // return value;
         imgEle2.attr("xlink:href", value)
@@ -64,24 +64,24 @@ var defs = svg.append('svg:defs');
     .attr("height", 60)
     .attr("x", 8)
     .attr("y", 14);
-    
+
   // image3
   var pattern3 = defs.append("svg:pattern")
-    .attr("id", "transformer1_image")
-    .attr("width", 16)
-    .attr("height", 16);
-  var imgEle3 = pattern3.append("svg:image")
-    .attr("xlink:href", () => {
-      return getBase64FromUrl('/assets/image3.jpg').then((value) => {
-        console.log("value", imgEle3);
-        // return value;
-        imgEle3.attr("xlink:href", value)
-      });
-    })
-    .attr("width", 60)
-    .attr("height", 60)
-    .attr("x", 8)
-    .attr("y", 14);
+  .attr("id", "transformer1_image")
+  .attr("width", 16)
+  .attr("height", 16);
+var imgEle3 = pattern3.append("svg:image")
+  .attr("xlink:href", () => {
+    return getBase64FromUrl('/assets/image1.jpg').then((value) => {
+      console.log("value", imgEle3);
+      // return value;
+      imgEle3.attr("xlink:href", value)
+    });
+  })
+  .attr("width", 60)
+  .attr("height", 60)
+  .attr("x", 8)
+  .attr("y", 14);
 
 // set up initial nodes and links
 //  - nodes are known by 'id', not by index in array.
@@ -89,7 +89,7 @@ var defs = svg.append('svg:defs');
 //  - links are always source < target; edge directions are set by 'left' and 'right'.
 
 var nodes = [
-    {id: 0, "name": "over","image": "url(#overhead_image)", reflexive: false},
+    {id: 0, "name": "over", "image": "url(#overhead_image)", reflexive: false},
     {id: 1, "name": "trans", "image": "url(#transformer_image)","isVisible": false,reflexive: true },
     {id: 2, "name": "tran", "image": "url(#transformer1_image)", "isVisible": false,reflexive: false}
   ];
@@ -348,9 +348,11 @@ path.on("click", function(d) {
         var selVal = $("#myselect").val();
         if(selVal == "over") {
           updateNodeCircle(selectedNodeId, "url(#overhead_image)")
-        } else if(selVal == "trans") {
+        }
+        if(selVal == "trans") {
           updateNodeCircle(selectedNodeId, "url(#transformer_image)")
-        } else if(selVal == "tran") {
+        }
+        if(selVal == "tran") {
           updateNodeCircle(selectedNodeId, "url(#transformer1_image)")
         }
       })
