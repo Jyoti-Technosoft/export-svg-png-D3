@@ -65,23 +65,6 @@ var defs = svg.append('svg:defs');
     .attr("x", 8)
     .attr("y", 14);
 
-  // image3
-  var pattern3 = defs.append("svg:pattern")
-  .attr("id", "transformer1_image")
-  .attr("width", 16)
-  .attr("height", 16);
-var imgEle3 = pattern3.append("svg:image")
-  .attr("xlink:href", () => {
-    return getBase64FromUrl('/assets/transformer.png').then((value) => {
-      console.log("value", imgEle3);
-      // return value;
-      imgEle3.attr("xlink:href", value)
-    });
-  })
-  .attr("width", 60)
-  .attr("height", 60)
-  .attr("x", 8)
-  .attr("y", 14);
 
 // set up initial nodes and links
 //  - nodes are known by 'id', not by index in array.
@@ -91,7 +74,7 @@ var imgEle3 = pattern3.append("svg:image")
 var nodes = [
     {id: 0, "name": "over", "image": "url(#overhead_image)", reflexive: false},
     {id: 1, "name": "trans", "image": "url(#transformer_image)","isVisible": false,reflexive: true },
-    {id: 2, "name": "tran", "image": "url(#transformer1_image)", "isVisible": false,reflexive: false}
+    {id: 2, "name": "tran", "image": "url(#transformer_image)", "isVisible": false,reflexive: false}
   ];
 
   lastNodeId = 2,
