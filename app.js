@@ -3,6 +3,7 @@
 var width  = 1060,
     height = 500,
     colors = d3.scale.category10();
+var selectedNodeId;
 
 var svg = d3.select('body')
   .append("svg")
@@ -323,50 +324,47 @@ path.on("click", function(d) {
       restart();
     })
     //Rahul
-    .on('dblclick', function(d) {console.log(d.id);$("#compnode").html(d.id); $("#dialog").show();$('#dialog').dialog();$('#dialog').css({
-      "background-color": "yellow",
-      "font-weight": "bolder",
-      "margin-left": "100px"
-    });//("coming inside");})
+    .on('dblclick', function(d) {
+      $("#compnode").html(d.id);
+      $("#dialog").show();
+      $('#dialog').dialog();
+      $('#dialog').css({
+        "background-color": "yellow",
+        "font-weight": "bolder",
+        "margin-left": "100px"
+      });
+      selectedNodeId = d.id;
 
+      // function updateNodeList(id, image) {
+      //   for (var i = 0; i < nodes.length; i++) {
+      //     if (nodes[i].id === id) {
+      //       nodes[i].image ="url(#transformer_image)";
+      //       break;
+      //     }
+      //   }
+      // }
 
-// function updateNodeList(id, image) {
-//   for (var i = 0; i < nodes.length; i++) {
-//     if (nodes[i].id === id) {
-//       nodes[i].image ="url(#transformer_image)";
-//       break;
-//     }
-//   }
-// }
+      $("#compbtn").click(function() {
+        var selVal = $("#myselect").val();
+        if(selVal == "over") {
+          updateNodeCircle(selectedNodeId, "url(#overhead_image)")
+        } else if(selVal == "trans") {
+          updateNodeCircle(selectedNodeId, "url(#transformer_image)")
+        } else if(selVal == "tran") {
+          updateNodeCircle(selectedNodeId, "url(#transformer1_image)")
+        }
+      })
 
-$("#compbtn").click(function(){
-  console.log($("#myselect").val());
-  console.log(d.id)
-  var selVal  =$("#myselect").val();
-  var id  = d.id
-
-  if (selVal === "over") {
-    updateNodeCircle(id.toString(),"url(#overhead_image)")
-  }
-  if (selVal === "trans") {
-    updateNodeCircle(id.toString(),"url(#transformer_image)")
-  }
-  if(selVal === "tran") {
-    updateNodeCircle(id.toString(),"url(#transformer1_image)")
-  }
-})
-
-function updateNodeCircle(id, image){
-cs = document.querySelectorAll('.node');
-  cs.forEach(circle =>
-  {   if(circle.id  === id){
-    circle.style.setProperty('fill', image);
-      }
+      function updateNodeCircle(id, image) {
+        cs = document.querySelectorAll('.node');
+        cs.forEach(circle => {
+          if(circle.id == id) {
+            circle.style.setProperty('fill', image);
+          }
         });
-         }
+      }
 
-
-})
+    })
     .on('mouseup', function(d) {
       if(!mousedown_node) return;
 
