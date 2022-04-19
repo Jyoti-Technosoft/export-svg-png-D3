@@ -172,7 +172,11 @@ function tick() {
         targetX = d.target.x - (targetPadding * normX),
         targetY = d.target.y - (targetPadding * normY);
     return 'M' + sourceX + ',' + sourceY + 'L' + targetX + ',' + targetY;
-  });
+  })
+  .attr("stroke", "#000")
+  .attr("fill", "none")
+  .style("stroke-width", "4px")
+  .style("cursor", "default")
 
     path.select('.id').attr("transform",function(d){
             return "translate("+
