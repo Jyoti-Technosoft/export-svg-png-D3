@@ -72,7 +72,7 @@ var defs = svg.append('svg:defs');
   .attr("height", 16);
 var imgEle3 = pattern3.append("svg:image")
   .attr("xlink:href", () => {
-    return getBase64FromUrl('/assets/image1.jpg').then((value) => {
+    return getBase64FromUrl('/assets/transformer.png').then((value) => {
       console.log("value", imgEle3);
       // return value;
       imgEle3.attr("xlink:href", value)
