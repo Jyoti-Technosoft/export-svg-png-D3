@@ -22,7 +22,6 @@ const getBase64FromUrl = async(url) => {
     reader.onloadend = function () {
       const base64data = reader.result;
       resolve(base64data);
-      console.log("base64data", base64data);
       return base64data;
     };
   });
@@ -38,7 +37,6 @@ var defs = svg.append('svg:defs');
   var imgEle1 = pattern1.append("svg:image")
     .attr("xlink:href", () => {
       return getBase64FromUrl('/assets/overhead.png').then((value) => {
-        console.log("value", imgEle1);
         imgEle1.attr("xlink:href", value)
       });
     })
@@ -55,7 +53,6 @@ var defs = svg.append('svg:defs');
     var imgEle2 = pattern2.append("svg:image")
     .attr("xlink:href", () => {
       return getBase64FromUrl('/assets/transformer.png').then((value) => {
-        console.log("value", imgEle2);
         // return value;
         imgEle2.attr("xlink:href", value)
       });
@@ -178,8 +175,6 @@ function tick() {
 function restart() {
   // path (link) group
   path = path.data(links);
-  console.log(path)
-  console.log(JSON.stringify(links)+"jhjjhjhjhjhjjjj")
 
    //ajax post newPaths
 var mousemove = function(e) {
@@ -188,7 +183,6 @@ alert(e.value)
 }
 
 circle.on("click",function(d){
-console.log(JSON.stringify(d)+"hello")
 //.on("mousemove", mousemove)
 
 $.ajax({
@@ -201,10 +195,7 @@ data:{
 },
 "success":function(data){
 alert('success'+ path)
-console.log(path,lastNodeId)
-console.log(newPaths.text)
 var selectTablas = d3.selectAll (".path");
-console.log(JSON.stringify(selectTablas))
 jQuery(".id").click(function(event) {
     event.preventDefault();
     var text = jQuery(this).text();
@@ -252,9 +243,7 @@ jQuery(".id").click(function(event) {
     //.text(function(d) { return d; });
     .text(function(d,i) { return 'C'+i * 1 ; });
 
-//console.log(newPaths.lastNodeId)
 var svg = document.getElementsByTagName('text')[0]
-console.log(svg.innerHTML)
 //alert($(svg).val());
 path.on("click", function(d) {
   //alert(d);
@@ -548,7 +537,6 @@ function draw() {
       var rawSvg = new XMLSerializer().serializeToString(d3.select("#canvas svg" ).node());
      var imgsrc=d3.select("#downloadSvgButton").attr('href', "data:image/svg+xml;base64," + btoa(rawSvg ));
     // var imgsrc = 'data:image/svg+xml;base64,'+ btoa( unescape( encodeURIComponent( svgString ) )
-    // console.log(rawSvg)
     }
 
         function saveSvgLink() {
@@ -574,42 +562,6 @@ function draw() {
 var allGs = document.getElementsByTagName('g');
 var firstG = allGs[0];
 var firstChild = firstG.childNodes[0];
-
-//     d3.select("#download")
-//                        .on("click", function(){
-//
-//                    var serializer = new XMLSerializer();
-//                    var xmlString = serializer.serializeToString(d3.select('mysvg').node());
-//                    var imgData = 'data:image/svg+xml;base64,' + btoa(xmlString);
-//                    console.log(imgData)
-//                        });
-//"data:image/svg+xml;base64," + btoa( rawSvg )
-
-//function svgString2Image( svgString, width, height, format, callback ) {
-//	var format = format ? format : 'png';
-//
-//	var imgsrc = 'data:image/svg+xml;base64,'+ btoa( unescape( encodeURIComponent( svgString ) ) ); // Convert SVG string to data URL
-//
-//	var canvas = document.createElement("canvas");
-//	var context = canvas.getContext("2d");
-//
-//	canvas.width = width;
-//	canvas.height = height;
-//
-//	var image = new Image();
-//	image.onload = function() {
-//		context.clearRect ( 0, 0, width, height );
-//		context.drawImage(image, 0, 0, width, height);
-//
-//		canvas.toBlob( function(blob) {
-//			var filesize = Math.round( blob.length/1024 ) + ' KB';
-//			if ( callback ) callback( blob, filesize );
-//		});
-//
-//	};
-//
-//	image.src = imgsrc;
-//}
 
   //export markup
   d3.select( "#exportMarkupButton" ).on( "click", exportMarkup );
