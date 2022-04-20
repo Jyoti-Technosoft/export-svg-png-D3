@@ -342,6 +342,10 @@ path.on("click", function(d) {
         });
       }
 
+      $("#deleteNode").click(function() {
+          mousedownNode(d, d.index);
+      })
+
     })
     .on('mouseup', function(d) {
       if(!mousedown_node) return;
