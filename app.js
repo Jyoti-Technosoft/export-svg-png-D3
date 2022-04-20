@@ -419,7 +419,14 @@ function mousedown() {
   node.x = point[0];
   node.y = point[1];
   nodes.push(node);
+  restart();
+}
 
+function mousedownNode(d, i) {
+  nodes.splice(i, 1);
+  links = links.filter(function(l) {
+    return l.source !== d && l.target !== d;
+  });
   restart();
 }
 
