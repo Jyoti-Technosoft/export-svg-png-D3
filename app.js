@@ -73,9 +73,16 @@ var imgEle2 = pattern2
 
 var id = 0;
 var nodes = [
-  { id: ++id, name: "over", image: "url(#overhead_image)", reflexive: false },
   {
     id: ++id,
+    index: id,
+    name: "over",
+    image: "url(#overhead_image)",
+    reflexive: false,
+  },
+  {
+    id: ++id,
+    index: id,
     name: "trans",
     image: "url(#transformer_image)",
     isVisible: false,
@@ -83,6 +90,7 @@ var nodes = [
   },
   {
     id: ++id,
+    index: id,
     name: "tran",
     image: "url(#transformer_image)",
     isVisible: false,
@@ -90,7 +98,7 @@ var nodes = [
   },
 ];
 
-var lastNodeId = 2;
+var lastNodeId = 3;
 var links = [
   { source: nodes[0], target: nodes[1], left: false, right: true },
   { source: nodes[1], target: nodes[2], left: false, right: true },
@@ -486,22 +494,27 @@ function mousedown() {
   if (d3.event.ctrlKey || mousedown_node || mousedown_link) return;
 
   // insert new node at point
-  lastNodeId = nodes.length - 1;
+  // lastNodeId = nodes.length - 1;
   var point = d3.mouse(this),
     node = { id: ++lastNodeId, reflexive: false };
   node.x = point[0];
   node.y = point[1];
   nodes.push(node);
+  nodes.map((element, index) => {
+    element.index = index;
+    return element;
+  });
   restart();
 }
 
 function deleteSelectedNode(d) {
-  const deleteNode = nodes.filter(function (node) {
-    return node.id !== d.id;
-  });
-  nodes = deleteNode;
+  nodes.splice(d.index, 1);
   links = links.filter(function (l) {
     return l.source !== d && l.target !== d;
+  });
+  nodes.map((element, index) => {
+    element.index = index;
+    return element;
   });
   restart();
 }
