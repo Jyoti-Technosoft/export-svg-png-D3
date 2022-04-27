@@ -74,7 +74,7 @@ var nodes = [
     {id: 2, "name": "tran", "image": "url(#transformer_image)", "isVisible": false,reflexive: false}
   ];
 
-  lastNodeId = 2,
+  var lastNodeId = 2,
   links = [
     {source: nodes[0], target: nodes[1], left: false, right: true },
     {source: nodes[1], target: nodes[2], left: false, right: true }
@@ -324,26 +324,28 @@ path.on("click", function(d) {
         var selVal = $("#myselect").val();
         if(selVal == "over") {
           updateNodeCircle(selectedNodeId, "url(#overhead_image)")
-        }
-        if(selVal == "trans") {
+        } else if(selVal == "trans") {
           updateNodeCircle(selectedNodeId, "url(#transformer_image)")
-        }
-        if(selVal == "tran") {
+        } else if(selVal == "tran") {
           updateNodeCircle(selectedNodeId, "url(#transformer1_image)")
+        } else {
+          updateNodeCircle(selectedNodeId);
         }
       })
 
       function updateNodeCircle(id, image) {
         cs = document.querySelectorAll('.node');
         cs.forEach(circle => {
-          if(circle.id == id) {
+          if(circle.id == id && image) {
             circle.style.setProperty('fill', image);
           }
         });
+        selectedNodeId = null;
       }
 
       $("#deleteNode").click(function() {
-          mousedownNode(d, d.index);
+        deleteSelectedNode(d);
+        $('#dialog').dialog("close");
       })
 
     })
@@ -418,6 +420,7 @@ function mousedown() {
   if(d3.event.ctrlKey || mousedown_node || mousedown_link) return;
 
   // insert new node at point
+  lastNodeId = nodes.length - 1;
   var point = d3.mouse(this),
       node = {id: ++lastNodeId, reflexive: false};
   node.x = point[0];
@@ -426,8 +429,11 @@ function mousedown() {
   restart();
 }
 
-function mousedownNode(d, i) {
-  nodes.splice(i, 1);
+function deleteSelectedNode(d) {
+  const deleteNode = nodes.filter(function(node) {
+    return node.id !== d.id;
+  });
+  nodes = deleteNode;
   links = links.filter(function(l) {
     return l.source !== d && l.target !== d;
   });
