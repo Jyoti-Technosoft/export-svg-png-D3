@@ -68,14 +68,15 @@ var defs = svg.append('svg:defs');
 //  - reflexive edges are indicated on the node (as a bold black circle).
 //  - links are always source < target; edge directions are set by 'left' and 'right'.
 
-var nodes = [
-    {id: 0, "name": "over", "image": "url(#overhead_image)", reflexive: false},
-    {id: 1, "name": "trans", "image": "url(#transformer_image)","isVisible": false,reflexive: true },
-    {id: 2, "name": "tran", "image": "url(#transformer_image)", "isVisible": false,reflexive: false}
+  var id = 0;
+  var nodes = [
+    {id: ++id, "name": "over", "image": "url(#overhead_image)", reflexive: false},
+    {id: ++id, "name": "trans", "image": "url(#transformer_image)","isVisible": false,reflexive: true },
+    {id: ++id, "name": "tran", "image": "url(#transformer_image)", "isVisible": false,reflexive: false}
   ];
 
-  var lastNodeId = 2,
-  links = [
+  var lastNodeId = 2;
+  var links = [
     {source: nodes[0], target: nodes[1], left: false, right: true },
     {source: nodes[1], target: nodes[2], left: false, right: true }
   ];
@@ -344,8 +345,10 @@ path.on("click", function(d) {
       }
 
       $("#deleteNode").click(function() {
-        deleteSelectedNode(d);
-        $('#dialog').dialog("close");
+        if(selectedNodeId == d.id) {
+          deleteSelectedNode(d);
+          $('#dialog').dialog("close");
+        }
       })
 
     })
