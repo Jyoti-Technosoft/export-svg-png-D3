@@ -309,10 +309,13 @@ function restart() {
   // update existing nodes (reflexive & selected visual states)
   circle
     .selectAll("circle")
+    .style('fill', (d) => d.image)
     // .style('fill', function(d) { return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id); })
     .classed("reflexive", function (d) {
       return d.reflexive;
-    });
+    })
+    .selectAll('text')
+    .text(d => d.id);
 
   // add new nodes
   var g = circle.enter().append("svg:g");
@@ -393,30 +396,40 @@ function restart() {
       $("#compbtn").click(function () {
         var selVal = $("#myselect").val();
         if (selVal == "over") {
-          updateNodeCircle(selectedNodeId, "url(#overhead_image)");
+          updateNodeCircle(selectedNodeId, "url(#overhead_image)", selVal);
         } else if (selVal == "trans") {
-          updateNodeCircle(selectedNodeId, "url(#transformer_image)");
+          updateNodeCircle(selectedNodeId, "url(#transformer_image)", selVal);
         } else if (selVal == "tran") {
-          updateNodeCircle(selectedNodeId, "url(#transformer1_image)");
+          updateNodeCircle(selectedNodeId, "url(#transformer1_image)", selVal);
         } else {
           updateNodeCircle(selectedNodeId);
         }
       });
 
-      function updateNodeCircle(id, image) {
-        cs = document.querySelectorAll(".node");
-        cs.forEach((circle) => {
-          if (circle.id == id && image) {
-            circle.style.setProperty("fill", image);
-          }
-        });
+      function updateNodeCircle(id, image, value) {
+        // cs = document.querySelectorAll(".node");
+        // cs.forEach((circle) => {
+        //   if (circle.id == id && image) {
+        //     circle.style.setProperty("fill", image);
+        //   }
+        // });
+        nodes
+          .filter((element) => {
+            return element.id == id;
+          })
+          .map((element) => {
+            element.image = image;
+            element.name = value;
+          });
+        restart();
         selectedNodeId = null;
+        closeDialog();
       }
 
       $("#deleteNode").click(function () {
         if (selectedNodeId == d.id) {
           deleteSelectedNode(d);
-          $("#dialog").dialog("close");
+          closeDialog();
         }
       });
     })
@@ -506,12 +519,31 @@ function mousedown() {
   });
   restart();
 }
+function getAllIndexes(arr, val) {
+  var indexes = [], i;
+  for(i = 0; i < arr.length; i++)
+      if (arr[i].source.id == d.id || arr[i].target.id == d.id)
+          indexes.push(i);
+  return indexes;
+}
 
 function deleteSelectedNode(d) {
+  
+  // index to be deleted 
+  // let indexToBeRemoved = getAllIndexes(links, d);
+  let found = true; 
+  while(found) {
+    let index = links.findIndex((item) => {
+      return item.source.id == d.id || item.target.id == d.id
+    });
+    found = (index != -1);
+    if (found)
+      links.splice(index, 1);
+  }
   nodes.splice(d.index, 1);
-  links = links.filter(function (l) {
-    return l.source !== d && l.target !== d;
-  });
+  // links = links.filter(function (l) {
+  //   return l.source !== d && l.target !== d;
+  // });
   nodes.map((element, index) => {
     element.index = index;
     return element;
@@ -818,3 +850,7 @@ d3.select("g, .path").on("click", function (e) {
     }
   });
 });
+
+function closeDialog() {
+  $("#dialog").dialog("close");
+}
