@@ -170,6 +170,13 @@
 
       color: "#fff";
     }
+
+    .button-container {
+      display: flex;
+      gap: 16px;
+      flex-direction: row-reverse;
+      align-items: flex-end;
+    }
   </style>
   <meta charset="utf-8" />
   <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
@@ -241,20 +248,26 @@
 
 
   <div id="dialog" title="Select Component Type">
-    <span id="compnode"></span>
-    <select id="myselect">
-      <!--<option  value="null">null</option>-->
-      <option value="over">Overhead</option>
-      <option value="trans">Transformer</option>
-    </select>
-    <a id="compbtn" class="save btn btn-success">Submit</a>
-    <a id="deleteNode" class="save btn btn-danger">Delete</a>
+    <p>
+      <span id="compnode"></span>
+      <select id="myselect">
+        <!--<option  value="null">null</option>-->
+        <option value="over">Overhead</option>
+        <option value="trans">Transformer</option>
+      </select>
+    </p>
+    <div class="button-container">
+      <a id="deleteNode" class="save btn btn-danger">Delete</a>
+      <a id="compbtn" class="save btn btn-success">Submit</a>
+    </div>
   </div>
 
   <div id="confirmation-dialog" title="Delete Confirmation">
-    <span>Are you sure you want to delete the selected node?</span>
-    <a id="no-btn" class="save btn btn-primary">No</a>
-    <a id="yes-btn" class="save btn btn-danger">Yes</a>
+    <p><span>Are you sure you want to delete the selected node?</span></p>
+    <div class="button-container">
+      <a id="no-btn" class="save btn btn-primary">No</a>
+      <a id="yes-btn" class="save btn btn-danger">Yes</a>
+    </div>
   </div>
 
   <div id="canvas"></div>
