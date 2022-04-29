@@ -783,6 +783,8 @@ function svgString2Image(svgString, width, height, format, callback) {
       var filesize = Math.round(blob.length / 1024) + " KB";
       if (callback) callback(blob, filesize);
     });
+    // Todo: Store exported image on the drive using base 64
+    console.log(canvas.toDataURL("image/png"));
   };
   image.src = imgsrc;
 }
