@@ -468,11 +468,22 @@ $("#compbtn").click(function () {
 });
 
 $("#deleteNode").click(function () {
+  // Open confirmation dialog before deleting node
+  $("#confirmation-dialog").show();
+  $("#confirmation-dialog").dialog();
+});
+
+$("#no-btn").click(function () {
+  $("#confirmation-dialog").dialog("close");
+});
+
+$("#yes-btn").click(function () {
   if (selectedNodeId) {
     deleteSelectedNode(selectedNodeId);
     closeDialog();
   }
   selectedNodeId = null;
+  $("#confirmation-dialog").dialog("close");
 });
 
 function updateNodeCircle(id, image, value) {

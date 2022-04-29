@@ -213,30 +213,24 @@
       //       my: "left top",
       //       at: "right bottom"
       //     }
-
       //   });
-
       // });
       // $('#compbtn').click(function () {
       //   $('#dialog').hide();
       //   // <!--  $(this).css("margin-left","30px");-->
       //   //  console.log($('#compnode').html());
       //   // <!-- console.log($( "#myselect" ).val());-->
-
-
-
       // });
-
     });
 
+    $(document).ready(function () {
+      $('#confirmation-dialog').hide();
+    });
 
     function cable() {
       alert('Please double click inside the circle for selection \n OR \n click around circle for new circle');
     }
   </script>
-
-  </head>
-
 
   <!-- <svg width="100" height="100" xmlns="//www.w3.org/2000/svg"-->
   <!--    xmlns:xlink="//www.w3.org/1999/xlink">-->
@@ -257,7 +251,13 @@
       <option value="trans">Transformer</option>
     </select>
     <a id="compbtn" class="save btn btn-success">Submit</a>
-    <a id="deleteNode" class="save btn btn-primary">Delete</a>
+    <a id="deleteNode" class="save btn btn-danger">Delete</a>
+  </div>
+
+  <div id="confirmation-dialog" title="Delete Confirmation">
+    <span>Are you sure you want to delete the selected node?</span>
+    <a id="no-btn" class="save btn btn-primary">No</a>
+    <a id="yes-btn" class="save btn btn-danger">Yes</a>
   </div>
 
   <div id="canvas"></div>
