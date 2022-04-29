@@ -309,13 +309,13 @@ function restart() {
   // update existing nodes (reflexive & selected visual states)
   circle
     .selectAll("circle")
-    .style('fill', (d) => d.image)
+    .style("fill", (d) => d.image)
     // .style('fill', function(d) { return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id); })
     .classed("reflexive", function (d) {
       return d.reflexive;
     })
-    .selectAll('text')
-    .text(d => d.id);
+    .selectAll("text")
+    .text((d) => d.id);
 
   // add new nodes
   var g = circle.enter().append("svg:g");
@@ -392,46 +392,6 @@ function restart() {
       //     }
       //   }
       // }
-
-      $("#compbtn").click(function () {
-        var selVal = $("#myselect").val();
-        if (selVal == "over") {
-          updateNodeCircle(selectedNodeId, "url(#overhead_image)", selVal);
-        } else if (selVal == "trans") {
-          updateNodeCircle(selectedNodeId, "url(#transformer_image)", selVal);
-        } else if (selVal == "tran") {
-          updateNodeCircle(selectedNodeId, "url(#transformer1_image)", selVal);
-        } else {
-          updateNodeCircle(selectedNodeId);
-        }
-      });
-
-      function updateNodeCircle(id, image, value) {
-        // cs = document.querySelectorAll(".node");
-        // cs.forEach((circle) => {
-        //   if (circle.id == id && image) {
-        //     circle.style.setProperty("fill", image);
-        //   }
-        // });
-        nodes
-          .filter((element) => {
-            return element.id == id;
-          })
-          .map((element) => {
-            element.image = image;
-            element.name = value;
-          });
-        restart();
-        selectedNodeId = null;
-        closeDialog();
-      }
-
-      $("#deleteNode").click(function () {
-        if (selectedNodeId == d.id) {
-          deleteSelectedNode(d);
-          closeDialog();
-        }
-      });
     })
     .on("mouseup", function (d) {
       if (!mousedown_node) return;
@@ -497,6 +457,41 @@ function restart() {
   force.start();
 }
 
+$("#compbtn").click(function () {
+  var selVal = $("#myselect").val();
+  if (selVal == "over") {
+    updateNodeCircle(selectedNodeId, "url(#overhead_image)", selVal);
+  } else if (selVal == "trans") {
+    updateNodeCircle(selectedNodeId, "url(#transformer_image)", selVal);
+  } else if (selVal == "tran") {
+    updateNodeCircle(selectedNodeId, "url(#transformer1_image)", selVal);
+  } else {
+    updateNodeCircle(selectedNodeId);
+  }
+});
+
+$("#deleteNode").click(function () {
+  if (selectedNodeId) {
+    deleteSelectedNode(selectedNodeId);
+    closeDialog();
+  }
+  selectedNodeId = null;
+});
+
+function updateNodeCircle(id, image, value) {
+  nodes
+    .filter((element) => {
+      return element.id == id;
+    })
+    .map((element) => {
+      element.image = image;
+      element.name = value;
+    });
+  restart();
+  selectedNodeId = null;
+  closeDialog();
+}
+
 function mousedown() {
   // prevent I-bar on drag
   //d3.event.preventDefault();
@@ -521,29 +516,27 @@ function mousedown() {
 }
 function getAllIndexes(arr, val) {
   var indexes = [], i;
-  for(i = 0; i < arr.length; i++)
-      if (arr[i].source.id == d.id || arr[i].target.id == d.id)
-          indexes.push(i);
+  for (i = 0; i < arr.length; i++)
+    if (arr[i].source.id == d.id || arr[i].target.id == d.id) indexes.push(i);
   return indexes;
 }
 
-function deleteSelectedNode(d) {
-  
-  // index to be deleted 
-  // let indexToBeRemoved = getAllIndexes(links, d);
-  let found = true; 
-  while(found) {
-    let index = links.findIndex((item) => {
-      return item.source.id == d.id || item.target.id == d.id
-    });
-    found = (index != -1);
-    if (found)
-      links.splice(index, 1);
-  }
-  nodes.splice(d.index, 1);
-  // links = links.filter(function (l) {
-  //   return l.source !== d && l.target !== d;
-  // });
+function deleteSelectedNode(selectedNodeId) {
+  let selectedNode = nodes.filter((n) => n.id === selectedNodeId);
+  let d = selectedNode.length > 0 ? selectedNode[0] : null;
+  // let found = (d) ? true : false;
+  // while(found) {
+  //   let index = links.findIndex((item) => {
+  //     return item.source.id == d.id || item.target.id == d.id
+  //   });
+  //   found = (index != -1);
+  //   if (found)
+  //     links.splice(index, 1);
+  // }
+  if (d) nodes.splice(d.index, 1);
+  links = links.filter(function (l) {
+    return l.source !== d && l.target !== d;
+  });
   nodes.map((element, index) => {
     element.index = index;
     return element;
