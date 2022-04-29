@@ -2,7 +2,6 @@
 var width = 1060,
   height = 500,
   colors = d3.scale.category10();
-var selectedNodeId;
 
 var svg = d3
   .select("body")
@@ -74,23 +73,23 @@ var imgEle2 = pattern2
 var id = 0;
 var nodes = [
   {
-    id: ++id,
     index: id,
+    id: ++id,
     name: "over",
     image: "url(#overhead_image)",
     reflexive: false,
   },
   {
-    id: ++id,
     index: id,
+    id: ++id,
     name: "trans",
     image: "url(#transformer_image)",
     isVisible: false,
     reflexive: true,
   },
   {
-    id: ++id,
     index: id,
+    id: ++id,
     name: "tran",
     image: "url(#transformer_image)",
     isVisible: false,
@@ -156,7 +155,8 @@ var selected_node = null,
   selected_link = null,
   mousedown_link = null,
   mousedown_node = null,
-  mouseup_node = null;
+  mouseup_node = null,
+  selectedNodeId = null;
 
 function resetMouseVars() {
   mousedown_node = null;
@@ -309,14 +309,13 @@ function restart() {
   // update existing nodes (reflexive & selected visual states)
   circle
     .selectAll("circle")
-    .style("fill", (d) => d.image)
+    .style("fill", (d) => d.image ? d.image : "#fff")
     // .style('fill', function(d) { return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id); })
     .classed("reflexive", function (d) {
       return d.reflexive;
-    })
-    .selectAll("text")
-    .text((d) => d.id);
-
+    });
+  circle.selectAll("text")
+    .text((d) => d.index + 1);
   // add new nodes
   var g = circle.enter().append("svg:g");
 
@@ -374,7 +373,7 @@ function restart() {
     })
     //Rahul
     .on("dblclick", function (d) {
-      $("#compnode").html(d.id);
+      $("#compnode").html((d.index + 1));
       $("#dialog").show();
       $("#dialog").dialog();
       $("#dialog").css({
@@ -446,9 +445,7 @@ function restart() {
     .attr("x", 0)
     .attr("y", 4)
     .attr("class", "id")
-    .text(function (d) {
-      return d.id;
-    });
+    .text((d)  => d.index + 1);
 
   // remove old nodes
   circle.exit().remove();
@@ -514,29 +511,20 @@ function mousedown() {
   });
   restart();
 }
-function getAllIndexes(arr, val) {
-  var indexes = [], i;
-  for (i = 0; i < arr.length; i++)
-    if (arr[i].source.id == d.id || arr[i].target.id == d.id) indexes.push(i);
-  return indexes;
-}
 
 function deleteSelectedNode(selectedNodeId) {
   let selectedNode = nodes.filter((n) => n.id === selectedNodeId);
   let d = selectedNode.length > 0 ? selectedNode[0] : null;
-  // let found = (d) ? true : false;
-  // while(found) {
-  //   let index = links.findIndex((item) => {
-  //     return item.source.id == d.id || item.target.id == d.id
-  //   });
-  //   found = (index != -1);
-  //   if (found)
-  //     links.splice(index, 1);
-  // }
+  let found = (d) ? true : false;
+  while(found) {
+    let index = links.findIndex((item) => {
+      return item.source.id == d.id || item.target.id == d.id
+    });
+    found = (index != -1);
+    if (found)
+      links.splice(index, 1);
+  }
   if (d) nodes.splice(d.index, 1);
-  links = links.filter(function (l) {
-    return l.source !== d && l.target !== d;
-  });
   nodes.map((element, index) => {
     element.index = index;
     return element;
